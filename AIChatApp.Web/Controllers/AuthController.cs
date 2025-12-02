@@ -68,8 +68,18 @@ public class AuthController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Login(LoginDto model)
+    public async Task<IActionResult> Login(LoginDto model, string returnUrl = null)
     {
+        if (User.Identity.IsAuthenticated)
+        {
+            // Set the TempData for the modal (This uses your existing modal logic)
+            TempData["ToastType"] = "warning";
+            TempData["ToastMessage"] = "You are currently signed in. Redirecting you to the homepage.";
+
+            // Immediately redirect the user to prevent processing the login again.
+            return RedirectToAction("Index", "Home");
+        }
+
         if (!ModelState.IsValid) return View(model);
 
         string result = await _authService.LoginUserAsync(model);

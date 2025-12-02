@@ -1,4 +1,5 @@
-﻿/**
+﻿
+/**
  * Closes the generic action modal.
  */
 function closeActionModal() {
@@ -125,3 +126,38 @@ function confirmLogout(event) {
         }
     });
 }
+
+
+/**
+ * Initializes toast display logic on page load.
+ * This function is designed to read and consume server-side TempData messages.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+    // ⚠️ IMPORTANT: These values are INJECTED by the Razor engine into the final JS file.
+    // They are defined as global variables in the <head> or <body> of the layout page.
+
+    // Check if the variables were successfully defined in the Razor View
+    if (typeof window.razorToastType !== 'undefined' && window.razorToastMessage && window.showSimpleToast) {
+
+        const type = window.razorToastType;
+        const message = window.razorToastMessage;
+
+        let title = '';
+        if (type === 'warning') {
+            title = 'Access Denied';
+        } else if (type === 'success') {
+            title = 'Operation Successful';
+        } else {
+            title = 'Information';
+        }
+
+        // Only show if a message is present (empty string means no message)
+        if (message) {
+            showSimpleToast(title, message, type);
+        }
+
+        // Cleanup the global variables after consumption
+        delete window.razorToastType;
+        delete window.razorToastMessage;
+    }
+});

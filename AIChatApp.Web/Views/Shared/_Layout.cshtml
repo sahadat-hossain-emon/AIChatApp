@@ -13,6 +13,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AIChatApp</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @RenderSection("HeadMeta", required: false)
+    
 </head>
 <body class="bg-gray-50 text-gray-900">
     <nav class="w-full bg-white shadow-sm fixed top-0 left-0 z-50">
@@ -99,6 +101,12 @@
     @* Load Scripts *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // These variables will be read by the site.js script.
+        // NOTE: C# TempData values are converted to JavaScript strings here.
+        window.razorToastType = '@(TempData["ToastType"]?.ToString() ?? "")';
+        window.razorToastMessage = '@(TempData["ToastMessage"]?.ToString() ?? "")';
+    </script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 
