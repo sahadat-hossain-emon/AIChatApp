@@ -59,11 +59,12 @@ public class ChatHub : Hub
                 sentAt = savedMessage.SentAt.ToString("o")
             });
 
-            // Confirm to sender
+            // Confirm to sender (include senderId so client can match temp message)
             _logger.LogInformation("Confirming to sender");
             await Clients.Caller.SendAsync("MessageSent", new
             {
                 id = savedMessage.Id,
+                senderId = savedMessage.SenderId.ToString(),
                 receiverId = receiverId,
                 message = savedMessage.MessageContent,
                 sentAt = savedMessage.SentAt.ToString("o")
