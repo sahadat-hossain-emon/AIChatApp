@@ -8,9 +8,13 @@
     <div class="flex items-center space-x-4">
         <!-- Avatar -->
         <div class="relative">
-            <img src="@(string.IsNullOrEmpty(Model.ProfileImageUrl) ? "/images/default-avatar.png" : Model.ProfileImageUrl)"
+            <img src="@(string.IsNullOrWhiteSpace(Model.ProfileImageUrl)
+                             ? Url.Content("~/images/default-image.png")
+                             : Model.ProfileImageUrl)"
                  alt="@Model.FullName"
-                 class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm" />
+                 class="w-14 h-14 rounded-full object-cover border-2 border-white shadow-sm"
+                 onerror="this.onerror=null;this.src='@Url.Content("~/images/default-image.png")';" />
+
 
             <!-- Added id and dynamic hidden class for SignalR -->
             <span id="unread-badge-@Model.UserId"

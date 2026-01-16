@@ -3,25 +3,17 @@
     Layout = "_ChatLayout";
     ViewData["Title"] = $"Chat with {Model.ChatUserFullName ?? Model.ChatUserName}";
 
-    // Generate avatar initials
-    string initials = "";
     var displayName = Model.ChatUserFullName ?? Model.ChatUserName ?? "User";
-    if (!string.IsNullOrEmpty(displayName))
-    {
-        var nameParts = displayName.Trim().Split(' ');
-        if (nameParts.Length >= 2)
-        {
-            initials = $"{nameParts[0][0]}{nameParts[nameParts.Length - 1][0]}".ToUpper();
-        }
-        else if (nameParts.Length == 1)
-        {
-            initials = nameParts[0][0].ToString().ToUpper();
-        }
-    }
 
-    string avatarUrl = $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(initials)}&background=6366f1&color=fff&size=128&bold=true";
-    string profileImageSource = !string.IsNullOrEmpty(Model.ChatUserProfileImage) ? Model.ChatUserProfileImage : avatarUrl;
+    // Local default image (wwwroot)
+    var defaultAvatar = Url.Content("~/images/default-image.png");
+
+    // If user has uploaded an image use it, otherwise fallback to local default
+    var profileImageSource = !string.IsNullOrWhiteSpace(Model.ChatUserProfileImage)
+        ? Model.ChatUserProfileImage
+        : defaultAvatar;
 }
+
 
 <!-- Main Wrapper: Centered 70% width on Desktop -->
 <div class="fixed inset-0 bg-[#f8fafc] flex justify-center">
@@ -43,7 +35,7 @@
                         <img src="@profileImageSource"
                              alt="@displayName"
                              class="relative w-11 h-11 rounded-full object-cover ring-2 ring-white"
-                             onerror="this.onerror=null;this.src='@avatarUrl';" />
+                             onerror="this.onerror=null;this.src='@defaultAvatar';" />
                         <span id="userStatus"
                               class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-gray-300 border-2 border-white rounded-full"></span>
                     </div>

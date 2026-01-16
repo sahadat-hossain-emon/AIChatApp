@@ -1,3 +1,4 @@
+//e0d666329d233c1f5ea0cb457c47dd6cc144a8946005b2df9c5850965467d68e
 using AIChatApp.Application.Interfaces;
 using AIChatApp.Application.Services;
 using AIChatApp.Domain.Interfaces;
@@ -116,11 +117,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+{
+    app.Urls.Add($"http://0.0.0.0:{port}");
+}
+
 app.Run();
 
-
-//Prefetching + Local Caching -> for make navigation faster
-//SQL Server Full-Text Search (FTS) -> for searching messages
-//Keyset Pagination(Cursor Based) -> for loading chat history
-//Redis Caching -> for frequently accessed data
-//Vector Search Integration -> for semantic search in messages

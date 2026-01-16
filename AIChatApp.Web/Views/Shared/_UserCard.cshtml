@@ -1,28 +1,23 @@
 ﻿@model AIChatApp.Domain.DTOs.UserListDto
 
 @{
-    // Generate avatar initials
-    string initials = "";
-    if (!string.IsNullOrEmpty(Model.FullName))
-    {
-        var nameParts = Model.FullName.Trim().Split(' ');
-        if (nameParts.Length >= 2)
-        {
-            initials = $"{nameParts[0][0]}{nameParts[nameParts.Length - 1][0]}".ToUpper();
-        }
-        else if (nameParts.Length == 1)
-        {
-            initials = nameParts[0][0].ToString().ToUpper();
-        }
-    }
+    // Default avatar from wwwroot
+    var defaultAvatar = Url.Content("~/images/default-image.png");
 
-    // High-end UI Avatars configuration
-    string avatarUrl = $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(initials)}&background=6366F1&color=fff&size=128&bold=true&font-size=0.35";
-    string profileImageSource = !string.IsNullOrEmpty(Model.ProfileImageUrl) ? Model.ProfileImageUrl : avatarUrl;
+    // Clean profile image value
+    var uploadedImage = Model.ProfileImageUrl?.Trim();
 
-    // Logic for "New" badge
+    // Final image source resolution
+    var profileImageSource = string.IsNullOrWhiteSpace(uploadedImage)
+        ? defaultAvatar
+        : (uploadedImage.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+            ? uploadedImage
+            : Url.Content($"~/{uploadedImage.TrimStart('/')}"));
+
+    // Logic for "New" badge (kept as-is)
     bool isNewMember = Model.CreatedAt > DateTime.Now.AddDays(-7);
 }
+
 
 <div class="relative flex items-center justify-between p-5 bg-white border border-slate-100 rounded-[2rem] shadow-sm transition-all duration-300">
 
@@ -32,8 +27,17 @@
             <img src="@profileImageSource"
                  alt="@Model.FullName"
                  class="h-14 w-14 rounded-[1.2rem] object-cover bg-slate-50 border border-slate-100 relative z-10"
-                 onerror="this.onerror=null;this.src='@avatarUrl';" />
+                 onerror="this.onerror=null;this.src='@defaultAvatar';" />
+
+            @* Optional NEW badge *@
+            @if (isNewMember)
+            {
+                <span class="absolute -top-1 -right-1 rounded-full bg-indigo-600 px-2 py-0.5 text-[10px] font-bold text-white shadow">
+                    NEW
+                </span>
+            }
         </div>
+
 
         <!-- User Information -->
         <div class="flex flex-col">
